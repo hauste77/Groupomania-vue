@@ -1,18 +1,21 @@
 <template>
   <v-app id="inspire">
     <v-app-bar app>
-      <v-container class="py-0 fill-height">
+      
         <v-avatar class="mr-10" color="grey darken-1" size="40">
           <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
         </v-avatar>
         <v-spacer></v-spacer>
+        <router-link class="nodeco" to="/">
+          <v-btn rounded color="teal accent-3" class="mr-3" >home</v-btn>
+        </router-link>
         <router-link class="nodeco" to="Profile">
           <v-btn rounded color="teal accent-3" class="mr-3" >profile</v-btn>
         </router-link>
         <router-link class="nodeco" to="post">
-          <v-btn rounded color="teal accent-3" >message</v-btn>
+          <v-btn rounded color="teal accent-3" class="mr-3">créer message</v-btn>
         </router-link>
-      </v-container>
+          <v-btn rounded color="teal accent-3" @click.prevent="deconnexion()">déconnexion</v-btn>
     </v-app-bar>
 
     <v-main class="main grey lighten-2">
@@ -23,7 +26,7 @@
               <v-card color="grey lighten-3" v-for="post in posts.slice().reverse()" v-bind:key="post.id">
                 <v-card-title primary-title>
                   <div>
-                    <h3 class="headline mb-2" > {{post.createdAt}} </h3>
+                    <p class="headline mb-2"  >  {{format_date(post.createdAt)}}  </p>
                     <div>
                       <h2 class="mb-2"> {{post.title}} </h2>
                       <p>
@@ -40,11 +43,18 @@
                   </div>
                 </v-card-title>
                 <v-card-actions class="d-flex">
-                  <v-btn class="mr-3" color="teal accent-3" rounded >👍</v-btn>
-                  <router-link class="nodeco mr-3" to="post">
-                  <v-btn color="teal accent-3" rounded >modifié</v-btn>
+                  <v-btn class="mr-3" color="teal accent-3" rounded @click.prevent="() => like()" >👍 {{}}</v-btn>
+                  <router-link class="nodeco mr-3"  :to="{name: 'updatePost', params: {id: post.id}}">
+                  <v-btn 
+                  color="teal accent-3" 
+                  rounded
+                  v-if="isMyPost( post.userId )" 
+                  >modifié</v-btn>
                   </router-link>
-                  <v-btn color="teal accent-3" rounded >supprimer</v-btn>
+                  <v-btn 
+                  color="red" 
+                    v-if="isMyPost( post.userId ) || isAdmin" 
+                  rounded @click.prevent="() => deletePost(post.id)" >Supprimer</v-btn>
                 </v-card-actions>
               </v-card>
             </div>
@@ -57,71 +67,104 @@
 
 <script>
 import Vue from 'vue';
-// import Cookies from 'js-cookie';
-
+import moment from 'moment';
 
 export default {
   data() {
     return {
-      posts: [].reverse()
-        
-  
-  };
+      posts: [],
+      user: ""
+    };
   },
+
   created: function () {
-        Vue.$http.get( '/posts') 
-      .then( ( res ) => {
-        this.posts = res.data
+    Vue.$http.get( '/posts') 
+      .then( ( res ) => { 
+        this.posts = res.data;
+        console.log(this.posts)
+        } )
+      .catch( error => console.log( error ) );
+  },
+
+  mounted: function () {
+    Vue.$http.get("/users/me")
+      .then( res => { 
+        this.user = res.data;
+        console.log(this.user)
+        // window.location.reload();
         
-      },)
-        .catch( error => {
-          console.log( error );
-        });
-},
+        } )
+      .catch( error => console.log( error ) );
+  },
   
   methods: {
-     updatePost: function (e) {
+    deletePost(id) {
+      const postId = this.posts.findIndex((post) => post.id === id );
 
-      e.preventDefault();
-      this.submitted = true;
-      this.$v.$touch();
-      if (this.$v.$invalid) {
-        return;
-      }
-
-      if ( this.title || this.content ) {
-        const data = {
-          id: this.user.id
-        };
-
-        if ( this.title ) {
-          data[ "title" ] = this.title;
+      if (postId !== -1) {
+        this.posts.splice(postId);
+        Vue.$http.delete("/posts/" + id);
+        // window.location.reload();
         }
-        if ( this.content ) {
-          data[ "content" ] = this.content;
-        }
-
-        Vue.$http
-          .put( "/posts/:id", data )
-          .then((res) => {
-            console.log(res);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-    },
-    validate() {
-      this.$refs.form.validate();
     },
 
-},
+    isMyPost( id ) { return this.user.id === id; },
+
+    format_date(value){
+         if (value) {
+           return moment(String(value)).format('DD/MM/YYYY')
+          }
+      },
+
+      deconnexion: function() {
+         this.$session.destroy();
+        window.location.reload();
+       },
+
+      likeDislike(id) {
+        const postId = this.posts.findIndex((post) => post.id === id );
+        const userId = this.user.id;
+        console.log(userId)
+        console.log(postId)
+        if(postId !== -1 && userId === id) {
+          Vue.$http.post( `/posts/${postId}/like`) 
+          .then( ( res ) => { 
+            console.log(res)
+            console.log(666)
+          //   console.log(this.posts)
+        
+        } )
+
+          .catch( error => console.log( error ) );
+        }
+      }, 
+
+      like() {
+        Vue.$http.get( '/like')
+        .then( res => { 
+        // this.user = res.data;
+        console.log(res)
+        // window.location.reload();
+        
+        } )
+      .catch( error => console.log( error ) );
+      }  
+  },
+  computed: {
+    isAdmin() {
+      return this.user.rights
+        && this.user.rights.length > 0
+        && this.user.rights.includes( 'admin' );
+    }
+  }
 };
 </script>
 
-<style>
+<style scoped>
 .v-application--wrap {
   min-height: 100vh;
+  min-width: 100vw;
+
 }
 
 .v-card__actions.d-flex {
@@ -129,7 +172,8 @@ export default {
 }
 
 main.v-main.main.grey.lighten-2 {
-  height: 95vh;
+  height: 100vh;
+  width: 100vw;
   display: flex;
   align-items: center;
 }
@@ -183,4 +227,16 @@ main.v-main.main.grey.lighten-2 {
 img {
   max-height: 400px;
 }
+
+@media screen {
+  /* .row{
+    justify-content: space-between;
+  } */
+
+  /* .chat-container{
+    width: 95vw;
+  } */
+
+}
+
 </style>

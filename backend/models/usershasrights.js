@@ -18,7 +18,15 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
       allowNull: false,
       primaryKey: true
-    }
+    },
+    userId: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+    },
+    rightId: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+    },
   }, {
     sequelize,
     modelName: 'UsersHasRights',

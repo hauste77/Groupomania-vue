@@ -20,8 +20,15 @@ module.exports = {
             email: req.body.email,
             password: password
         } )
-        .then( _ => {
-            res.status(200).json( { success: true } );
+        .then( data => {
+            const user = data.get( { plain: true } );
+
+            models.UsersHasRights.create( {
+                userId: user.id,
+                rightId: 0
+            } )
+            .then( _ => { res.status(200).json( { success: true } ) } )
+            .catch( err => res.status(400).json( { success: false, message: err } ) );
         } )
         .catch( err => {
             res.status(400).json( { success: false, message: err } );

@@ -14,6 +14,7 @@ module.exports = {
                 title: req.body.title,
                 content: req.body.content,
                 userId: req.user.id,
+                // attachment:`${req.protocol}://${req.get('host')}/images/${req.file.filename}`
             })
             .then( post => {
                 return res.status(201).json( post );

@@ -6,5 +6,6 @@ const likes = require('../controlers/likes');
 
 // Likes
 router.post('/posts/:postId/like', auth, likes.likeDislike);
+router.get('/like', auth, likes.likeDislikeAll);
 
 module.exports = router;

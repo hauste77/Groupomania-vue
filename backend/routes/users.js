@@ -12,9 +12,11 @@ router.get('/me', auth, userCtrl.getUser);
 router.delete('/me', auth, userCtrl.deleteUser);
 router.put('/me', auth, userCtrl.updateUser);
 
+// all
+router.get('/', auth, admin, userCtrl.getUsers);
+
 // /:id
 router.get('/:id', auth, admin, userCtrl.getUser);
-router.put('/:id', auth, admin, userCtrl.updateUser);
 router.delete('/:id', auth, admin, userCtrl.deleteUser);
 
 module.exports = router;

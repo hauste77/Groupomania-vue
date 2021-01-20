@@ -1,14 +1,17 @@
 
 <template>
   <v-app>
-    <v-app-bar>
+    <v-app-bar app>
+      <v-container class="py-0 fill-height">
       <v-toolbar-title class="text-uppercase grey--text">
         <span class="logo teal--text text--accent-3">Groupomania</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <router-link class="nodeco" to="/Chat">
-        <v-btn rounded color="teal accent-3">chat</v-btn>
+        <v-btn rounded color="teal accent-3" class="mr-3">forum</v-btn>
       </router-link>
+          <v-btn @click.prevent="deconnexion()" rounded color="teal accent-3">déconnexion</v-btn>
+      </v-container>
     </v-app-bar>
     <div id="profil" class="d-flex align-center justify-center">
       <v-form @submit="updateUser"
@@ -119,6 +122,7 @@ export default {
       .get("/users/me")
       .then((res) => {
         this.user = res.data;
+        console.log(this.user)
         
       })
       .catch((error) => {
@@ -153,6 +157,7 @@ export default {
         Vue.$http
           .put( "/users/me", data )
           .then((res) => {
+            window.location.reload();
             console.log(res);
           })
           .catch((error) => {
@@ -160,6 +165,13 @@ export default {
           });
       }
     },
+
+     deconnexion: function() {
+         this.$session.destroy();
+        window.location.reload();
+
+       },
+
     validate() {
       this.$refs.form.validate();
     },
@@ -183,8 +195,18 @@ input {
   margin-bottom: 10px;
 }
 
+.container.fill-height {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .v-application--wrap {
   min-height: 0;
+}
+
+.v-toolbar__content {
+  width: 100vw;
 }
 
 .d-flex.flex-column.elevation-12.v-card.v-sheet.theme--light.grey.lighten-3 {

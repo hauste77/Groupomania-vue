@@ -25,5 +25,18 @@ module.exports = {
 
             return res.status(201).json( like );
         }
-    }
+    },
+
+    likeDislikeAll: (req, res) => {
+        models.Likes.findAll( {
+            include: [ {
+                model: models.User,
+                as: 'user',
+                attributes: [ 'userId' ]
+            } ]
+        } )
+        .then( ( data ) => res.status( 200 ).json( data ) )
+        .catch( ( err ) => res.status( 500 ).json( { err } ) );
+    },
+
 }
