@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     rightId: {
       allowNull: false,
       type: DataTypes.INTEGER,
+      defaultValue: '2'
     },
   }, {
     sequelize,

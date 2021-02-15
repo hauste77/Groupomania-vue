@@ -14,7 +14,7 @@ module.exports = {
                 title: req.body.title,
                 content: req.body.content,
                 userId: req.user.id,
-                // attachment:`${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+                attachment: req.file ? req.file.buffer : null
             })
             .then( post => {
                 return res.status(201).json( post );
@@ -27,14 +27,19 @@ module.exports = {
         }
 
     },
-
+ 
     getAllPosts: (req, res) => {
         models.Post.findAll( {
             include: [ {
-                model: models.User,
+                model: models.User, 
                 as: 'user',
                 attributes: [ 'username' ]
-            } ]
+            },
+            // {
+            //     model: models.Likes,
+            //     attributes: ["like"],
+            // }
+         ]
         } )
         .then( ( data ) => res.status( 200 ).json( data ) )
         .catch( ( err ) => res.status( 500 ).json( { err } ) );
@@ -61,23 +66,31 @@ module.exports = {
 
     updatePost: async (req, res, next) => {
         const user = req.user,
-            postId = req.params.id;
-
-        const post = await models.Post.findByPk( postId );
+            postId = req.params.id,
+            post = await models.Post.findByPk( postId ),
+            data = {
+                title: req.body.title,
+                content: req.body.content,
+                userId: req.user.id,
+            };
 
         if ( post ) {
             if ( post.userId === user.id ) {
-                
-                const [ row ] = await models.Post.update( req.body, { where: { id: postId } } );
-                
+                if ( req.file ) {
+                    data[ 'attachment' ] = req.file.buffer;
+                }
+
+                const row = await models.Post.update( data, { where: { id: postId } } );
+
                 if ( row ) {
                     return res.status( 200 ).send( { message: "Ressource updated" } );
                 }
             } else {
                 return res.status( 403 ).send( { message: "Not allowed" } );
             }
+        } else {
+            return res.status( 404 ).send( { message: "Resource does not exist" } );
         }
-        return res.status( 404 ).send( { message: "Resource does not exist" } );
     },
 
     deletePost: async (req, res, next) => {

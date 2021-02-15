@@ -25,7 +25,7 @@ module.exports = {
 
             models.UsersHasRights.create( {
                 userId: user.id,
-                rightId: 0
+                rightId: 2
             } )
             .then( _ => { res.status(200).json( { success: true } ) } )
             .catch( err => res.status(400).json( { success: false, message: err } ) );

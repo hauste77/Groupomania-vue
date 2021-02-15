@@ -37,7 +37,10 @@ module.exports = (sequelize, DataTypes) => {
         len: [3, 250]
       }
     },
-    attachment: DataTypes.STRING,
+    attachment: {
+      type: DataTypes.BLOB("long"),
+      allowNull: true,
+    },
   }, {
     sequelize,
     modelName: 'Post',

@@ -28,7 +28,7 @@ module.exports = {
       },
       attachment: {
         allowNull: true,
-        type: Sequelize.STRING
+        type: Sequelize.BLOB("long")
       },
       createdAt: {
         allowNull: false,

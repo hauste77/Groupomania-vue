@@ -1,16 +1,3 @@
-// const mysql = require('mysql');
-
-// const db = mysql.createConnection({
-//     host     : "127.0.0.1",
-//     username : "root",
-//     password : "",
-//     database: "database_development_groupomania"
-// });
-
-
-
-// module.exports = db;
-
 const Sequelize = require('sequelize')
 const db = {}
 var database = require('../models');

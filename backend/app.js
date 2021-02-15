@@ -3,7 +3,6 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
 const bodyParser = require('body-parser');
-const path = require('path');
 
 const authRoutes = require('./routes/auth');
 const postsRoutes = require('./routes/posts');
@@ -42,15 +41,18 @@ app.use(
 app.use(cookieParser());
 
 // pour tranformer le corps en objet
-app.use(bodyParser.json());
-
-// pour avoir accè au images
-app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({extended: true}))
 
 // Importation des routes
 app.use('/api/', likesRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/posts', postsRoutes);
-  
+
+app.use(function (err, req, res, next) {
+    console.log('This is the invalid field ->', err.field)
+    next( err )
+})
+
 module.exports = app;
