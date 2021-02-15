@@ -6,8 +6,14 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <router-link class="nodeco" to="/">
-        <v-btn rounded color="teal accent-3">accueil</v-btn>
+        <v-btn rounded color="teal accent-3" class="mr-3">accueil</v-btn>
       </router-link>
+      <router-link class="nodeco" to="Profile">
+          <v-btn rounded color="teal accent-3" class="mr-3" >profile</v-btn>
+        </router-link>
+      <router-link class="nodeco" to="chat">
+          <v-btn rounded color="teal accent-3" class="mr-3" >forum</v-btn>
+        </router-link>
     </v-app-bar>
     <v-container id="regular-tables" tag="section">
     <h1>List user</h1>
@@ -17,7 +23,7 @@
             <th class="primary--text">ID</th>
             <th class="primary--text">Name</th>
             <th class="primary--text">Email</th>
-            <th class="primary--text">bio</th>
+            <th class="primary--text">Right</th>
           </tr>
         </thead>
 

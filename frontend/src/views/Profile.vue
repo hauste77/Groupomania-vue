@@ -169,7 +169,6 @@ export default {
      deconnexion: function() {
          this.$session.destroy();
         window.location.reload();
-
        },
 
     validate() {
@@ -198,7 +197,6 @@ input {
 .container.fill-height {
     align-items: center;
     display: flex;
-    flex-wrap: wrap;
 }
 
 .v-application--wrap {
@@ -211,5 +209,13 @@ input {
 
 .d-flex.flex-column.elevation-12.v-card.v-sheet.theme--light.grey.lighten-3 {
   min-width: 20%;
+}
+
+@media (max-width: 768px) {
+  
+  .container.fill-height {
+    flex-wrap: nowrap;
+}
+ 
 }
 </style>
