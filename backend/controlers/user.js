@@ -97,8 +97,10 @@ module.exports = {
         });
     },
     deleteUser:  (req, res, next) => {
+        const userId = req.params.id || req.user.id;
+
         models.User.destroy( 
-            {where: { id: req.params.id}
+            { where: { id: userId }
         })
         .then(() => res.status(200).send({ message: 'La suppression est effectuée!'}))
         .catch((error) => res.status(500).send(error))

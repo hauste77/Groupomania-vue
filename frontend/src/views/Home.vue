@@ -1,87 +1,63 @@
 <template>
- <v-app class="leave-absolute">
-      <v-app-bar app>
-      <v-toolbar-title class="text-uppercase grey--text">
-            <span class="logo teal--text text--accent-3">Groupomania</span>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <router-link class="nodeco mr-3" to="login">
-        <v-btn
-        rounded
-        v-if="authenticated === false"
-        class="co"
-        color="teal accent-3"
-        >Connexion</v-btn>
-      </router-link>
-      <router-link class="nodeco mr-3" to="Chat">
-        <v-btn
-        rounded
-        v-if="authenticated === true"
-        class="co"
-        color="teal accent-3"
-        >chat</v-btn>
-      </router-link>
-      <router-link class="nodeco mr-3" to="Profile">
-        <v-btn
-        rounded
-        v-if="authenticated === true"
-        class="co"
-        color="teal accent-3"
-        >profil</v-btn>
-      </router-link>
-      <router-link class="nodeco" to="signup">
-        <v-btn 
-        v-if="authenticated === false"
-        rounded 
-        color="teal accent-3"
-        >Créer un compte</v-btn>
-      </router-link>
-    </v-app-bar>
-   <v-main class="text-center align-center">
-     <h1 class="mb-15">Bienvenue chez</h1>
-     <div class="img"> 
-      <v-img class="" src="../assets/Groupomania.svg"></v-img>
-     </div>
-   </v-main>
- </v-app>
+  <v-container class="text-center-logo">
+    <h1 class="mb-15">Bienvenue chez</h1>
+    <div class="img">
+      <v-img class="home-logo" src="../assets/Groupomania.svg"></v-img>
+    </div>
+  </v-container>
 </template>
 
 <script>
 export default {
-  data: function() {
-      return {
-        authenticated: false
-      }
+  data: function () {
+    return {
+      authenticated: false
+    };
+  },
+
+  methods: {
+    logout: function () {
+      this.authenticated = true;
     },
 
-     methods: {
-       logout: function() {
-         this.authenticated = true;
-       }
+    deconnexion: function () {
+      this.$session.destroy();
+      window.location.reload();
+    },
   },
 
   created() {
-      this.authenticated = this.$session.exists()
-    },
-}
+    this.authenticated = this.$session.exists();
+  },
+};
 </script>
 
-<style>
-.v-application--wrap {
-  min-height: 15vh;
+<style scoped>
+.text-center-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100vh;
+  min-width: 100vw;
 }
 
-/* .theme--light.v-btn:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) {
-    display: none;
-} */
-
-.nodeco {
-  text-decoration: none;
+h1 {
+  font-size: 2.5rem;
+  color: #1976d2;
 }
 
-.img {
-  margin: auto;
-  width: 50vw;
-  
+.logo {
+  color: #1976d2;
+}
+
+@media (max-width: 650px) {
+  h1 {
+  font-size: 1.5rem;
+  }
+
+  .img {
+    width: 100%;
+  }
 }
 </style>

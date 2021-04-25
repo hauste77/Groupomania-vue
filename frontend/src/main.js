@@ -7,7 +7,6 @@ import Vuelidate from 'vuelidate';
 import Axios from '../axiosAPI';
 import VueSession from 'vue-session';
 
-
 Vue.use(VueSession);
 
 Vue.config.productionTip = false;
