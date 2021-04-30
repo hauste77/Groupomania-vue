@@ -5,7 +5,7 @@ const models = require('../models');
 
 // Constants
 const 
-  jwtKey = "my_secret_key", // dupliquer dans le middleware, mettre dans l'environnement
+  jwtKey = "my_secret_key", // mettre dans l'environnement
   jwtExpiryTime = 5 * 3600000; // 5 * (1h in sec)
 
 // Routes

@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const jwtKey = "my_secret_key"; // dupliquer dans le middleware, mettre dans l'environnement
+const jwtKey = "my_secret_key"; // mettre dans l'environnement
 
 module.exports = (req, res, next) => {
     const token = req.cookies.acces_token || '';

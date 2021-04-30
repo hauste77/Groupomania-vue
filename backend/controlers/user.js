@@ -24,7 +24,7 @@ module.exports = {
             } );
             res.status( 200 ).send( users )
         })
-        .catch( error => res.status(500).send( console.log(error) ) )
+        .catch( error => res.status(500).send() )
     },
     getUser: (req, res) => {
         const userId = req.params.id || req.user.id;
@@ -45,7 +45,7 @@ module.exports = {
             user.rights = user.rights.reduce( ( acc, currValue ) => acc.concat( currValue.name ), [] );
             res.status( 200 ).send( user )
         })
-        .catch( error => res.status(500).send( console.log(error) ) )
+        .catch( error => res.status(500).send() )
     },
     updateUser: (req, res) => {
 

@@ -1,55 +1,45 @@
 <template>
   <v-container fluid>
-  <v-card class="d-flex flex-column elevation-12" color="grey lighten-3">
-    <v-form
-      ref="form"
-      d-flex
-      align-center
-      justify-center
-      lazy-validation
-      @submit="messagePost"
-    >
-      <v-col>
+    <v-card class="elevation-12 theme--dark">
+      <h1>Nouveau message</h1>
+      <v-form ref="form" lazy-validation @submit="messagePost">
         <div v-if="submitted && $v.title.$error" class="invalid-feedback">
           <span v-if="!$v.title.required">Un titre est requis</span>
-          <span v-if="!$v.title.minLength"
+          <span class="error" v-if="!$v.title.minLength"
             >Le titre doit faire au moins 3 caractères de long</span
           >
-          <span v-if="!$v.title.maxLength"
+          <span class="error" v-if="!$v.title.maxLength"
             >Le titre doit faire moins de 50 caractères de long</span
           >
         </div>
-        <v-row>
-          <v-text-field
-            v-model="title"
-            prepend-icon="fa-pen"
-            :class="{ 'is-invalid': submitted && $v.title.$error }"
-            label="Titre"
-            class="ma-2"
-            required
-            hint="Entre 3 et 50 caractères"
-          ></v-text-field>
-        </v-row>
+        <v-text-field
+          v-model="title"
+          :class="{ 'is-invalid': submitted && $v.title.$error }"
+          label="Titre"
+          color="#1976d2"
+          dark
+          required
+          hint="Entre 3 et 50 caractères"
+        ></v-text-field>
+
         <div v-if="submitted && $v.content.$error" class="invalid-feedback">
           <span v-if="!$v.content.required">Du contenu est requis</span>
-          <span v-if="!$v.content.minLength"
+          <span class="error" v-if="!$v.content.minLength"
             >Le contenu doit faire au moins 3 caractères de long</span
           >
-          <span v-if="!$v.content.maxLength"
+          <span class="error" v-if="!$v.content.maxLength"
             >Le contenu doit faire moins de 250 caractères de long</span
           >
         </div>
-        <v-row>
-          <v-textarea
-            v-model="content"
-            prepend-icon="fa-pen"
-            :class="{ 'is-invalid': submitted && $v.content.$error }"
-            label="Contenu"
-            class="ma-2"
-            required
-            hint="Entre 3 et 250 caractères"
-          ></v-textarea>
-        </v-row>
+        <v-textarea
+          v-model="content"
+          :class="{ 'is-invalid': submitted && $v.content.$error }"
+          label="Contenu"
+          color="#1976d2"
+          required
+          dark
+          hint="Entre 3 et 250 caractères"
+        ></v-textarea>
 
         <input
           type="file"
@@ -57,25 +47,15 @@
           accept="image/*"
           @change="saveInputFile"
         />
-
-        <v-row justify="space-around" align="end">
-          <v-btn
-            type="submit"
-            value="Submit"
-            class="mt-4"
-            color="primary"
-            depressed
-            >Valider</v-btn
-          >
-        </v-row>
-      </v-col>
-    </v-form>
-  </v-card>
-  <v-snackbar top v-model="snackbar" color="success">
-    {{ snackbarText }}
-  </v-snackbar>
-</v-container>
-
+        <v-btn type="submit" value="Submit" color="primary" depressed
+          >Valider</v-btn
+        >
+      </v-form>
+    </v-card>
+    <v-snackbar :color="snackbar.color" v-model="snackbar.show">
+      {{ snackbar.message }}
+    </v-snackbar>
+  </v-container>
 </template>
 
 <script>
@@ -88,8 +68,11 @@ export default {
     content: "",
     file: "",
     submitted: false,
-    snackbar: false,
-    snackbarText: "",
+    snackbar: {
+      show: false,
+      message: null,
+      color: null,
+    },
   }),
   validations: {
     title: { required, minLength: minLength(3), maxLength: maxLength(50) },
@@ -102,8 +85,14 @@ export default {
       .then((res) => {
         this.user = res.data;
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((e) => {
+        const err = e.response;
+
+        this.snackbar = {
+          message: `HTTP ${err.status} / ${err.data.name} / ${err.data.errors[0].message}`,
+          color: "error",
+          show: true,
+        };
       });
   },
 
@@ -141,13 +130,23 @@ export default {
 
       Vue.$http
         .post("/posts/", data)
-        .then((res) => {
-          console.log(res);
-          this.snackbar = true;
-          this.snackbarText = "Message créer";
-          setTimeout(() => this.$router.push("chat"), 1000);
+        .then(() => {
+          this.snackbar = {
+            message: "Message créer",
+            color: "success",
+            show: true,
+          };
+          setTimeout(() => this.$router.push("chat"), 700);
         })
-        .catch((err) => console.log(err)); // Afficher un message d'erreur
+        .catch((e) => {
+          const err = e.response;
+
+          this.snackbar = {
+            message: `HTTP ${err.status} / ${err.data.name} / ${err.data.errors[0].message}`,
+            color: "error",
+            show: true,
+          };
+        });
     },
   },
 };
@@ -155,20 +154,6 @@ export default {
 
 <style scoped>
 .container {
-  display: flex;
-  flex: 1;
   justify-content: center;
-  align-items: center !important;
-}
-
-.v-form {
-  min-width: 50vw;
-  width: 50%;
-}
-
-@media (max-width: 500px) {
-  .v-form {
-    width: 100%;
-}
 }
 </style>

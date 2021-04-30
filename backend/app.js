@@ -50,6 +50,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/posts', postsRoutes);
 
+
 app.use(function (err, req, res, next) {
     console.log('This is the invalid field ->', err.field)
     next( err )

@@ -42,7 +42,7 @@ module.exports = {
          ]
         } )
         .then( ( data ) => res.status( 200 ).json( data ) )
-        .catch( ( err ) => res.status( 500 ).json( { err } ) );
+        .catch( ( err ) => res.status( 500 ).json( err ) );
     },
 
     getMyPosts: (req, res) => {
@@ -55,7 +55,7 @@ module.exports = {
             where: { userId: req.user.id }
         } )
         .then( ( data ) => res.status( 200 ).json( data ) )
-        .catch( ( err ) => res.status( 500 ).json( { err } ) );
+        .catch( ( err ) => res.status( 500 ).json( err ) );
     },
 
     getPost: (req, res, next) => {

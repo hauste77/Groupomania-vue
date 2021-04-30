@@ -1,7 +1,8 @@
 'use strict';
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Comments', {
+    return queryInterface.createTable('Posts', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -18,18 +19,17 @@ module.exports = {
           key: 'id',
         }
       },
-      postId: {
+      title: {
         allowNull: false,
-        type: Sequelize.INTEGER,
-        onDelete: 'CASCADE',
-        references: {
-          model: 'Posts',
-          key: 'id',
-        }
+        type: Sequelize.STRING
       },
       content: {
         allowNull: false,
         type: Sequelize.STRING
+      },
+      attachment: {
+        allowNull: true,
+        type: Sequelize.BLOB("long")
       },
       createdAt: {
         allowNull: false,
@@ -42,6 +42,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Comments');
+    return queryInterface.dropTable('Posts');
   }
 };

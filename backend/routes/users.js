@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const userCtrl = require('../controlers/user');
-// const bouncer = require('express-bouncer')(5000,900000,5);
 
 // middleware
 const auth = require('../middleware/auth'),

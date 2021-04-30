@@ -3,33 +3,34 @@
     <v-toolbar dark>
       <!-- title -->
       <v-toolbar-title class="text-uppercase">
-        <router-link to="/" tag="span" style="cursor: pointer">Groupomania</router-link>
+        <router-link to="/" tag="span" style="cursor: pointer"
+          >Groupomania</router-link
+        >
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
-     
-
 
       <v-toolbar-items class="hidden-sm-and-down">
-          <v-btn
-            v-if="isAdminUser"
-             router
-            :key="'admin'"
-            :to="'/admin'"
-          >
-            <v-icon left dark>settings</v-icon>
-            Admin
-          </v-btn>
+        <v-btn v-if="isAdminUser" router :key="'admin'" :to="'/admin'">
+          <v-icon left dark>settings</v-icon>
+          Admin
+        </v-btn>
         <v-btn
           v-for="item in menuItems"
           router
           :key="item.title"
           :to="item.link"
-          text>
+          text
+        >
           <v-icon left dark>{{ item.icon }}</v-icon>
           {{ item.title }}
         </v-btn>
-        <v-btn v-if="isSignedInUser" text color="error"  @click.prevent="deconnexion()">
+        <v-btn
+          v-if="isSignedInUser"
+          text
+          color="error"
+          @click.prevent="deconnexion()"
+        >
           <v-icon left dark>logout</v-icon>
           Déconnexion
         </v-btn>
@@ -37,14 +38,11 @@
 
       <v-app-bar-nav-icon
         class="hidden-md-and-up"
-        @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+        @click.stop="drawer = !drawer"
+      ></v-app-bar-nav-icon>
     </v-toolbar>
 
-    <v-navigation-drawer
-      app
-      v-model="drawer"
-      temporary
-      right>
+    <v-navigation-drawer app v-model="drawer" temporary right>
       <v-list nav dense>
         <v-list-item
           v-for="item in menuItems"
@@ -59,19 +57,24 @@
           <v-list-item-content>
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
-          
         </v-list-item>
         <v-list-item
-            v-if="isAdminUser"
-             router
-            :key="'admin'"
-            :to="'/admin'"
-          >
-            <v-icon left dark>settings</v-icon>
-            Admin
-          </v-list-item>
-          <v-list-item v-if="isSignedInUser" text  @click.prevent="deconnexion()">
-          <v-icon left dark>logout</v-icon>
+          class="list-btn"
+          v-if="isAdminUser"
+          router
+          :key="'admin'"
+          :to="'/admin'"
+        >
+          <v-icon left>settings</v-icon>
+          Admin
+        </v-list-item>
+        <v-list-item
+          class="list-btn"
+          v-if="isSignedInUser"
+          text
+          @click.prevent="deconnexion()"
+        >
+          <v-icon left>logout</v-icon>
           Déconnexion
         </v-list-item>
       </v-list>
@@ -83,56 +86,57 @@
 export default {
   data: () => ({
     drawer: false,
-    routeControl:  "",
+    routeControl: "",
     authenticated: false,
     watch: {
-      group () {
-        this.drawer = false
+      group() {
+        this.drawer = false;
       },
-    }
+    },
   }),
   methods: {
-    logout: function() {
-         this.authenticated = true;
-       },
-
-     deconnexion: function () {
-      this.$store.dispatch( 'isSignedInUser', null )
-        .then( () => {
-          this.$session.destroy();
-          window.location.reload();
-        } );
+    logout: function () {
+      this.authenticated = true;
     },
-    
 
+    deconnexion: function () {
+      this.$store.dispatch("isSignedInUser", null).then(() => {
+        this.$session.destroy();
+        window.location.reload();
+      });
+    },
   },
   computed: {
     menuItems() {
       let menuItems = [
-        { icon: 'face', title: 'S\'enregistrer', link: '/signup' },
-        { icon: 'lock_open', title: 'Se connecter', link: '/login' }
+        { icon: "face", title: "S'enregistrer", link: "/signup" },
+        { icon: "lock_open", title: "Se connecter", link: "/login" },
       ];
-      
-      if ( this.isSignedInUser ) {
+
+      if (this.isSignedInUser) {
         menuItems = [
-        { icon: 'person', title: 'Profil', link: '/profile' },
-        { icon: 'room', title: 'Chat', link: '/chat' },
-      ];
+          { icon: "person", title: "Profil", link: "/profile" },
+          { icon: "room", title: "Forum", link: "/chat" },
+        ];
       }
       return menuItems;
     },
     isSignedInUser() {
-      console.log( this.$store.getters.user )
-      return this.$store.getters.user !== null && this.$store.getters.user !== undefined;
+      return (
+        this.$store.getters.user !== null &&
+        this.$store.getters.user !== undefined
+      );
     },
-    isAdminUser: function() {
-        return this.isSignedInUser && this.$store.getters.user.rights.includes( 'admin' );
+    isAdminUser: function () {
+      return (
+        this.isSignedInUser && this.$store.getters.user.rights.includes("admin")
+      );
     },
-  }
+  },
 };
 </script>
 
-<style>
+<style scoped>
 .v-toolbar__title {
   color: #1976d2;
 }
@@ -174,28 +178,26 @@ button.v-btn.v-btn--flat.v-btn--text.theme--dark.v-size--default {
 }
 
 .v-btn--contained {
-    box-shadow: none !important;
-    
+  box-shadow: none !important;
 }
 
-
-.v-navigation-drawer__content {
-    background-color: #2b2b2b;
+.v-navigation-drawer {
+  background-color: #2b2b2b !important;
 }
 
 .v-list--dense .v-list-item .v-list-item__title {
-  color: #ffffff;
+  color: #ffffff !important;
 }
 
-.theme--light.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
-    color: #ffffff!important;
+.list-btn.v-list-item.v-list-item--link.theme--light {
+  color: #f70909 !important;
+}
+
+a.list-btn.v-list-item.v-list-item--link.theme--light {
+  color: #ffffff !important;
 }
 
 .v-icon {
   color: #ffffff !important;
 }
-
-/* .theme--dark.v-icon {
-    color: rgba(0,0,0,.54)!important;
-} */
 </style>

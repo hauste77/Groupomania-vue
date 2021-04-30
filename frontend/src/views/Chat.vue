@@ -1,24 +1,12 @@
 <template>
-  <v-container fluid>
+  <v-container id="chat" fluid>
     <router-link to="/post">
-      <v-btn
-        absolute
-        fab
-        large
-        dark
-        bottom
-        right
-        class="btn-add"
-      >
+      <v-btn absolute fab large dark bottom right class="btn-add">
         <v-icon>mdi-comment-plus</v-icon>
       </v-btn>
     </router-link>
 
-    <v-toolbar
-      rounded
-      dense
-      dark
-    >
+    <v-toolbar rounded dense dark>
       <v-text-field
         class="mr-10"
         v-model="search"
@@ -40,20 +28,17 @@
         <h2>{{ post.title }}</h2>
         <v-spacer></v-spacer>
         <div class="btn">
-          <router-link :to="{ name: 'updatePost', params: { id: post.id } }">
-            <v-btn
-              v-if="isMyPost(post.userId)"
-              small
-              color="primary"
-            >
+          <router-link :to="{ name: 'comment', query: { id: post.id } }">
+            <v-btn small color="green">
+              <v-icon dense>mdi-message-outline</v-icon>
+            </v-btn>
+          </router-link>
+          <router-link :to="{ name: 'updatePost', query: { id: post.id } }">
+            <v-btn small color="primary" v-if="isMyPost(post.userId)">
               <v-icon dense class="material-icons">edit</v-icon>
             </v-btn>
           </router-link>
-          <v-btn
-            v-if="isMyPost(post.userId) || isAdmin"
-            small
-            color="error"
-          >
+          <v-btn small color="error" v-if="isMyPost(post.userId) || isAdmin">
             <v-icon
               dense
               class="mdi-delete-clock"
@@ -61,22 +46,20 @@
               >mdi-delete-off</v-icon
             >
           </v-btn>
-      </div>
+        </div>
       </v-card-title>
 
       <p class="body">{{ post.content }}</p>
       <img :src="dataUrl(post.attachment)" />
-      <div class="infos">
-        <p class="author">Auteur : {{ post.user.username }}</p>
-        <v-spacer></v-spacer>
-        <p size class="date">Créé le {{ format_date(post.createdAt) }}</p>
+      <div class="infos header">
+        <div class="author">@{{ post.user.username }}</div>
+        <div class="date">{{ format_date(post.createdAt) }}</div>
       </div>
     </v-card>
-  <v-snackbar top v-model="snackbar" color="error">
-    {{ snackbarText }}
-  </v-snackbar>
+    <v-snackbar :color="snackbar.color" v-model="snackbar.show">
+      {{ snackbar.message }}
+    </v-snackbar>
   </v-container>
-
 </template>
 
 <script>
@@ -91,8 +74,11 @@ export default {
       posts: [],
       user: "",
       search: "",
-      snackbar: false,
-      snackbarText: "",
+      snackbar: {
+        show: false,
+        message: null,
+        color: null,
+      },
     };
   },
 
@@ -101,8 +87,17 @@ export default {
       .get("/posts")
       .then((res) => {
         this.posts = res.data;
+        console.log(this.posts)
       })
-      .catch((error) => console.log(error));
+      .catch((e) => {
+        const err = e.response;
+
+        this.snackbar = {
+          message: `HTTP ${err.status} / ${err.data.name} / ${err.data.errors[0].message}`,
+          color: "error",
+          show: true,
+        };
+      });
   },
 
   mounted: function () {
@@ -111,7 +106,15 @@ export default {
       .then((res) => {
         this.user = res.data;
       })
-      .catch((error) => console.log(error));
+      .catch((e) => {
+        const err = e.response;
+
+        this.snackbar = {
+          message: `HTTP ${err.status} / ${err.data.name} / ${err.data.errors[0].message}`,
+          color: "error",
+          show: true,
+        };
+      });
   },
 
   methods: {
@@ -123,14 +126,25 @@ export default {
       }
     },
     deletePost(id) {
-      const postId = this.posts.findIndex((post) => post.id === id);
+      if (id !== -1) {
+        Vue.$http.delete("/posts/" + id)
+       .then( () => {
+            this.snackbar = {
+              message: "Message supprimer",
+              color: "success",
+              show: true,
+            };
+            setTimeout(() => window.location.reload(), 300);
+          })
+          .catch((e) => {
+            const err = e.response;
 
-      if (postId !== -1) {
-        this.posts.splice(postId);
-        Vue.$http.delete("/posts/" + id);
-        this.snackbar = true;
-        this.snackbarText = "Message supprimer";
-        setTimeout(() => window.location.reload(), 1000);
+            this.snackbar = {
+              message: `HTTP ${err.status} / ${err.data.name} / ${err.data.errors[0].message}`,
+              color: "error",
+              show: true,
+            }
+          });
       }
     },
 
@@ -156,21 +170,31 @@ export default {
         Vue.$http
           .post(`/posts/${postId}/like`)
           .then(() => {})
+          .catch((e) => {
+            const err = e.response;
 
-          .catch((error) => console.log(error));
+            this.snackbar = {
+              message: `HTTP ${err.status} / ${err.data.name} / ${err.data.errors[0].message}`,
+              color: "error",
+              show: true,
+            };
+          });
       }
     },
-
     like(id) {
       const postId = this.posts.findIndex((post) => post.id === id);
       Vue.$http
         .get(`/posts/${postId}/like`)
-        .then((res) => {
-          // this.user = res.data;
-          console.log(res);
-          // window.location.reload();
-        })
-        .catch((error) => console.log(error));
+        .then(() => {})
+        .catch((e) => {
+          const err = e.response;
+
+          this.snackbar = {
+            message: `HTTP ${err.status} / ${err.data.name} / ${err.data.errors[0].message}`,
+            color: "error",
+            show: true,
+          };
+        });
     },
   },
   computed: {
@@ -192,31 +216,17 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  align-items: center;
-}
-
 .v-btn--fab.v-size--large.v-btn--absolute.v-btn--bottom {
   right: 30px;
   bottom: 20px;
 }
 
-.card.v-card {
-  width: 45%;
-  padding: 10px;
-  border-radius: 6px;
-}
-.card.v-card:nth-child(n+2),
-.card.v-card > *:nth-child(n+2) {
-  margin-top: 20px;
+.btn > *:nth-child(n + 2) {
+  margin-left: 5px;
 }
 
-.card.v-card .v-card__title {
-  flex-wrap: nowrap;
-  padding: 0 0 16px;
+.v-application a {
+  text-decoration: none;
 }
 
 img {
@@ -227,26 +237,27 @@ img {
 }
 
 .infos {
-  display:flex;
+  display: flex;
 }
 .infos > * {
   margin-bottom: 0;
 }
 
 .mdi-comment-plus::before {
-    color: #1976d2;
+  color: #1976d2;
 }
 
-@media (max-width: 1020px) {
-  .card.v-card {
-    width: 90%;
-  }
-}
 @media (max-width: 500px) {
   .btn {
+    display: flex;
+    flex-direction: column-reverse;
     align-self: flex-start;
     margin-left: 10px;
     text-align: -webkit-right;
+  }
+
+  .v-card__title {
+    align-items: flex-start;
 }
 }
 </style>

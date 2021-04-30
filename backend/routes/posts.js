@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const posts = require('../controlers/posts');
+const comments = require('../controlers/comments');
 const auth = require('../middleware/auth');
 
 const multer  = require('multer');
@@ -16,5 +17,9 @@ router.get('/', auth, posts.getAllPosts);
 router.get('/me', auth, posts.getMyPosts);
 router.get('/:id', auth, posts.getPost);
 router.put('/:id', auth, upload.single( 'attachment' ), posts.updatePost);
+
+router.get('/:id/comments/', auth, comments.getAllCommentsByPost);
+router.post('/:id/comment', auth, upload.none(), comments.createComment);
+router.delete('/:id/comment/:id', auth, comments.deleteComment);
 
 module.exports = router;

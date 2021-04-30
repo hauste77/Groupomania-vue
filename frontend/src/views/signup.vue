@@ -1,102 +1,84 @@
 <template>
-  <v-main>
-    <v-container class="fill-height" fluid>
-      <v-row align="center" justify="center">
-        <v-col cols="12" md="8">
-          <v-form @submit="signUpSubmit" ref="form">
-            <v-card class="elevation-12">
-              <v-card-text class="">
-                <h1 class="text-center display-2">
-                  Créer un compte
-                </h1>
-                <h4 class="text-center mt-4">
-                  Entrez votre email pour vous inscrire
-                </h4>
-                <v-text-field
-                  label="username"
-                  name="username"
-                  id="username"
-                  :class="{ 'is-invalid': submitted && $v.username.$error }"
-                  v-model="username"
-                  prepend-icon="person"
-                  type="text"
-                  required
-                  color="primary"
-                  hint="Entre 4 et 20 caractères"
-                />
-                <div
-                  v-if="submitted && $v.username.$error"
-                  class="invalid-feedback"
-                >
-                  <span class="error" v-if="!$v.username.required"
-                    >Nom d'utilisateur requis</span
-                  >
-                  <span class="error" v-if="!$v.username.minLength"
-                    >Votre nom doit faire au moins 4 caractères.</span
-                  >
-                  <span class="error" v-if="!$v.username.maxLength"
-                    >Votre nom doit faire moins de 20 caractères.</span
-                  >
-                </div>
-                <v-text-field
-                  label="email"
-                  name="email"
-                  id="email"
-                  :class="{ 'is-invalid': submitted && $v.email.$error }"
-                  v-model="email"
-                  prepend-icon="email"
-                  type="text"
-                  required
-                  color="primary"
-                />
-                <div
-                  v-if="submitted && $v.email.$error"
-                  class="invalid-feedback"
-                >
-                  <span class="error" v-if="!$v.email.required">Email requis</span>
-                  <span class="error" v-if="!$v.email.email">L' email doit être valide</span>
-                </div>
+  <v-container fluid>
+    <v-card class="elevation-12 theme--dark">
+      <v-form @submit="signUpSubmit" ref="form">
+        <h1>S'enregistrer</h1>
+        <h4 class="text-center">Entrez votre email pour vous inscrire</h4>
 
-                <v-text-field
-                  label="Password"
-                  name="password"
-                  id="password"
-                  :class="{ 'is-invalid': submitted && $v.password.$error }"
-                  v-model="password"
-                  prepend-icon="lock"
-                  type="password"
-                  required
-                  color="primary"
-                />
-                <div
-                  v-if="submitted && $v.password.$error"
-                  class="invalid-feedback"
-                >
-                  <span class="error" v-if="!$v.password.required"
-                    >Mot de passe requis</span
-                  >
-                  <span class="error" v-if="!$v.password.minLength"
-                    >Votre mot de passe doit faire au moins 4 caractères.</span
-                  >
-                  <span class="error" v-if="!$v.password.maxLength"
-                    >Votre mot de passe doit faire moins de 50 caractères.</span
-                  >
-                </div>
-              </v-card-text>
-              <div class="text-center pb-5">
-                <v-btn
-                  type="submit"
-                  value="Submit"
-                  color="primary"
-                  >Créer un compte</v-btn
-                >
-              </div>
-            </v-card>
-          </v-form>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-main>
+        <div v-if="submitted && $v.username.$error" class="invalid-feedback">
+          <span class="error" v-if="!$v.username.required"
+            >Nom d'utilisateur requis</span
+          >
+          <span class="error" v-if="!$v.username.minLength"
+            >Votre nom doit faire au moins 4 caractères.</span
+          >
+          <span class="error" v-if="!$v.username.maxLength"
+            >Votre nom doit faire moins de 20 caractères.</span
+          >
+        </div>
+        <v-text-field
+          dark
+          label="username"
+          name="username"
+          id="username"
+          :class="{ 'is-invalid': submitted && $v.username.$error }"
+          v-model="username"
+          prepend-icon="person"
+          type="text"
+          color="#1976d2"
+          required
+          hint="Entre 4 et 20 caractères"
+        />
+
+        <div v-if="submitted && $v.email.$error" class="invalid-feedback">
+          <span class="error" v-if="!$v.email.required">Email requis</span>
+          <span class="error" v-if="!$v.email.email"
+            >L' email doit être valide</span
+          >
+        </div>
+        <v-text-field
+          dark
+          label="email"
+          name="email"
+          id="email"
+          :class="{ 'is-invalid': submitted && $v.email.$error }"
+          v-model="email"
+          prepend-icon="email"
+          type="text"
+          color="#1976d2"
+          required
+        />
+
+        <div v-if="submitted && $v.password.$error" class="invalid-feedback">
+          <span class="error" v-if="!$v.password.required"
+            >Mot de passe requis</span
+          >
+          <span class="error" v-if="!$v.password.minLength"
+            >Votre mot de passe doit faire au moins 4 caractères.</span
+          >
+          <span class="error" v-if="!$v.password.maxLength"
+            >Votre mot de passe doit faire moins de 50 caractères.</span
+          >
+        </div>
+        <v-text-field
+          dark
+          label="Password"
+          name="password"
+          id="password"
+          :class="{ 'is-invalid': submitted && $v.password.$error }"
+          v-model="password"
+          prepend-icon="lock"
+          type="password"
+          color="#1976d2"
+          required
+        />
+
+        <v-btn type="submit" value="Submit" color="primary"
+          >Créer un compte</v-btn
+        >
+      </v-form>
+    </v-card>
+  </v-container>
 </template>
 
 <script scoped>
@@ -153,16 +135,16 @@ export default {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: dataForm,
-        
       })
-        .then((res) => {
-          console.log(res);
-          console.log(dataForm);
+        .then(() => this.$router.push("login"))
+        .catch((e) => {
+          const err = e.response;
 
-          this.$router.push("login");
-        })
-        .catch((error) => {
-          console.log("Une erreur s'est produite:", error.response);
+          this.snackbar = {
+            message: `HTTP ${err.status} / ${err.data.name} / ${err.data.errors[0].message}`,
+            color: "error",
+            show: true,
+          };
         });
     },
     validate() {
@@ -172,12 +154,8 @@ export default {
 };
 </script>
 
-<style>
-.row {
-  margin: 0;
-}
-
-h1.text-center.display-2 {
-  color: #1976d2;
+<style scoped>
+.container {
+  justify-content: center;
 }
 </style>

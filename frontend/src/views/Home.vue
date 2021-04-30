@@ -11,7 +11,7 @@
 export default {
   data: function () {
     return {
-      authenticated: false
+      authenticated: false,
     };
   },
 
@@ -53,7 +53,7 @@ h1 {
 
 @media (max-width: 650px) {
   h1 {
-  font-size: 1.5rem;
+    font-size: 1.5rem;
   }
 
   .img {
