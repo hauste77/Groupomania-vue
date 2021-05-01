@@ -6,7 +6,7 @@ const comments = require('../controlers/comments');
 const auth = require('../middleware/auth');
 
 const multer  = require('multer');
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({ storage: multer.memoryStorage() }); //The memory storage engine stores the files in memory as Buffer objects
 
 // admin users can
 router.delete('/:id', auth, posts.deletePost);

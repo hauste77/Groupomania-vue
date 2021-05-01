@@ -120,7 +120,7 @@ export default {
               color: "success",
               show: true,
             };
-            setTimeout(() => this.$router.push("chat"), 2000);
+            setTimeout(() => this.$router.push("chat"), 1000);
           })
           .catch((e) => {
             const err = e.response;

@@ -31,7 +31,7 @@ module.exports = {
                 }
             })
             .then(comment => res.status(200).json({ comment }) )
-            .catch( err => res.status(503).json( err ) );
+            .catch( err => res.status(400).json( err ) );
         },
 
         deleteComment: async (req, res, next) => {

@@ -117,4 +117,17 @@ div.v-data-table table thead tr th {
   font-size: 1em;
   padding: 0px 8px;
 }
+
+@media (max-width: 500px) {
+ div.v-data-table table thead tr th:nth-child(1){
+ display: none;
+}
+ div.v-data-table table tbody tr td:nth-child(1){
+ display: none;
+}
+
+.elevation-12.theme--dark.v-card.v-sheet.theme--light {
+  padding: 5px;
+}
+}
 </style>

@@ -247,17 +247,4 @@ img {
   color: #1976d2;
 }
 
-@media (max-width: 500px) {
-  .btn {
-    display: flex;
-    flex-direction: column-reverse;
-    align-self: flex-start;
-    margin-left: 10px;
-    text-align: -webkit-right;
-  }
-
-  .v-card__title {
-    align-items: flex-start;
-}
-}
 </style>

@@ -24,7 +24,7 @@ module.exports = {
             } );
             res.status( 200 ).send( users )
         })
-        .catch( error => res.status(500).send() )
+        .catch( error => res.status(400).send() )
     },
     getUser: (req, res) => {
         const userId = req.params.id || req.user.id;
@@ -45,7 +45,7 @@ module.exports = {
             user.rights = user.rights.reduce( ( acc, currValue ) => acc.concat( currValue.name ), [] );
             res.status( 200 ).send( user )
         })
-        .catch( error => res.status(500).send() )
+        .catch( error => res.status(400).send() )
     },
     updateUser: (req, res) => {
 
@@ -66,7 +66,7 @@ module.exports = {
                 }).then((userFound) => {
                     done(null, userFound);
                 })
-                .catch((err) => res.status(500).json({
+                .catch((err) => res.status(400).json({
                     'error': 'unable to verify user'
                 }));
             },
@@ -80,7 +80,7 @@ module.exports = {
                     }).then(() => {
                         done(userFound);
                     }).catch((err) => {
-                        res.status(500).json({ 'error': 'cannot update user' });
+                        res.status(400).json({ 'error': 'cannot update user' });
                     });
                 } else {
                     res.status(404).json({
@@ -103,6 +103,6 @@ module.exports = {
             { where: { id: userId }
         })
         .then(() => res.status(200).send({ message: 'La suppression est effectuée!'}))
-        .catch((error) => res.status(500).send(error))
+        .catch((error) => res.status(400).send(error))
     }
 }

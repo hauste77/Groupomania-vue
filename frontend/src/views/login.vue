@@ -116,11 +116,9 @@ export default {
             });
           }
         })
-        .catch((e) => {
-          const err = e.response;
-
+        .catch(() => {
           this.snackbar = {
-            message: `HTTP ${err.status} / ${err.data.name} / ${err.data.errors[0].message}`,
+            message: "Utilisateur inexistant ou mot de passe incorect",
             color: "error",
             show: true,
           };

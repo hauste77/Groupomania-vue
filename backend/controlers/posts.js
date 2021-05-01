@@ -20,7 +20,7 @@ module.exports = {
                 return res.status(201).json( post );
             })
             .catch( err => {
-                return res.status(503).json( { err } );
+                return res.status(400).json( { err } );
             });
         } else {
             return res.status(400).json( { 'error': 'missing parameters' } );
@@ -55,7 +55,7 @@ module.exports = {
             where: { userId: req.user.id }
         } )
         .then( ( data ) => res.status( 200 ).json( data ) )
-        .catch( ( err ) => res.status( 500 ).json( err ) );
+        .catch( ( err ) => res.status( 400 ).json( err ) );
     },
 
     getPost: (req, res, next) => {
